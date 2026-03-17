@@ -7,13 +7,11 @@ import {
   Card,
   CardContent,
   Grid,
-  CircularProgress,
 } from "@mui/material";
 
 function Dashboard() {
   const { user, isAdmin } = useAuth();
   const [clinicInfo, setClinicInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isAdmin) {
@@ -39,9 +37,7 @@ function Dashboard() {
           <Typography variant="h5" gutterBottom>
             Clinic Overview ({user?.clinicName})
           </Typography>
-          {loading ? (
-            <CircularProgress />
-          ) : clinicInfo ? (
+          {clinicInfo ? (
             <Grid container spacing={3}>
               <Grid item xs={12} sm={4}>
                 <Card elevation={3}>

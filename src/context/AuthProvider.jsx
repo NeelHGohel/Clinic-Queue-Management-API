@@ -13,8 +13,8 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       const userData = getUserData();
       setUser(JSON.parse(userData));
-      setLoading(false);
     }
+    setLoading(false);
   }, []);
   const loginAuth = (userData) => {
     setUser(JSON.parse(userData));

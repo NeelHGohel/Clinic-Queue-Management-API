@@ -23,8 +23,20 @@ import {
   TextField,
   Chip,
   Divider,
-  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
+
+const TIME_SLOTS = [
+  "09:00-09:15", "09:15-09:30", "09:30-09:45", "09:45-10:00",
+  "10:00-10:15", "10:15-10:30", "10:30-10:45", "10:45-11:00",
+  "11:00-11:15", "11:15-11:30", "11:30-11:45", "11:45-12:00",
+  "14:00-14:15", "14:15-14:30", "14:30-14:45", "14:45-15:00",
+  "15:00-15:15", "15:15-15:30", "15:30-15:45", "15:45-16:00",
+  "16:00-16:15", "16:15-16:30", "16:30-16:45", "16:45-17:00"
+];
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -33,10 +45,8 @@ function Appointments() {
     appointmentDate: "",
     timeSlot: "",
   });
-
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedAppt, setSelectedAppt] = useState(null);
-  const [detailsLoading, setDetailsLoading] = useState(false);
 
   const { isPatient } = useAuth();
 
@@ -55,15 +65,12 @@ function Appointments() {
   };
 
   const handleOpenDetails = (id) => {
-    setDetailsLoading(true);
     setDetailsOpen(true);
     getAppointmentById(id)
       .then((data) => {
         setSelectedAppt(data);
-        setDetailsLoading(false);
       })
       .catch((err) => {
-        setDetailsLoading(false);
         alert("Failed to load appointment details.");
       });
   };
@@ -139,7 +146,7 @@ function Appointments() {
                 <TableCell>
                   <Chip
                     label={appt.status}
-                    color={appt.status === "scheduled" ? "success" : "default"}
+                    color={appt.status === "scheduled" ? "success" : (appt.status === "completed" ? "info" : "default")}
                     size="small"
                   />
                 </TableCell>
@@ -183,11 +190,7 @@ function Appointments() {
       >
         <DialogTitle>Appointment Details (ID: {selectedAppt?.id})</DialogTitle>
         <DialogContent dividers>
-          {detailsLoading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-              <CircularProgress />
-            </Box>
-          ) : selectedAppt ? (
+          {selectedAppt ? (
             <Box>
               <Typography variant="h6" gutterBottom>
                 Medical Report
@@ -267,16 +270,23 @@ function Appointments() {
               value={formData.appointmentDate}
               onChange={handleChange}
             />
-            <TextField
-              margin="dense"
-              label="Time Slot (e.g. 10:00-10:15)"
-              name="timeSlot"
-              fullWidth
-              required
-              placeholder="10:00-10:15"
-              value={formData.timeSlot}
-              onChange={handleChange}
-            />
+            <FormControl fullWidth margin="dense" required>
+              <InputLabel id="time-slot-label">Time Slot</InputLabel>
+              <Select
+                labelId="time-slot-label"
+                id="timeSlot"
+                name="timeSlot"
+                value={formData.timeSlot}
+                label="Time Slot"
+                onChange={handleChange}
+              >
+                {TIME_SLOTS.map((slot) => (
+                  <MenuItem key={slot} value={slot}>
+                    {slot}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpen(false)} color="inherit">
