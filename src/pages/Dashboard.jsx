@@ -18,10 +18,8 @@ function Dashboard() {
   useEffect(() => {
     if (isAdmin) {
       const fetchClinicInfo = async () => {
-        setLoading(true);
         const data = await getClinicInfo();
         setClinicInfo(data);
-        setLoading(false);
       };
       fetchClinicInfo();
     }
